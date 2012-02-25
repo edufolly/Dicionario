@@ -1,6 +1,6 @@
 package br.com.oslunaticos.spellcheck;
 
-import com.stibocatalog.hunspell.Hunspell.Dictionary;
+import br.com.oslunaticos.hunspell.Hunspell.Dictionary;
 import java.awt.Color;
 import javax.swing.text.JTextComponent;
 

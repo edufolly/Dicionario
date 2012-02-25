@@ -1,6 +1,6 @@
 package br.com.oslunaticos.spellcheck;
 
-import com.stibocatalog.hunspell.Hunspell;
+import br.com.oslunaticos.hunspell.Hunspell;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
