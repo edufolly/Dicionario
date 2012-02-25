@@ -1,4 +1,4 @@
-package br.com.oslunaticos;
+package br.com.oslunaticos.spellcheck;
 
 import com.stibocatalog.hunspell.Hunspell;
 import javax.swing.event.DocumentEvent;

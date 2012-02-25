@@ -1,4 +1,4 @@
-package br.com.oslunaticos;
+package br.com.oslunaticos.spellcheck;
 
 import com.stibocatalog.hunspell.Hunspell.Dictionary;
 import java.awt.Color;

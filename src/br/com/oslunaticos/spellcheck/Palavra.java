@@ -1,4 +1,4 @@
-package br.com.oslunaticos;
+package br.com.oslunaticos.spellcheck;
 
 /**
  *
