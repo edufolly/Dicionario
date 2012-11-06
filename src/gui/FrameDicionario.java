@@ -11,9 +11,6 @@ import java.io.File;
  */
 public class FrameDicionario extends javax.swing.JFrame {
 
-    /**
-     * Creates new form FrameDicionario
-     */
     public FrameDicionario() {
         Dictionary dictionary = null;
 
@@ -91,7 +88,7 @@ public class FrameDicionario extends javax.swing.JFrame {
 
         jPanel1.add(jScrollPane4);
 
-        jPanel2.setLayout(new java.awt.GridLayout());
+        jPanel2.setLayout(new java.awt.GridLayout(1, 0));
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("JTextField"));
         jPanel3.setLayout(new java.awt.GridBagLayout());
@@ -138,7 +135,7 @@ public class FrameDicionario extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 678, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(botaoSair)))
                 .addContainerGap())
         );
@@ -152,7 +149,8 @@ public class FrameDicionario extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        pack();
+        java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+        setBounds((screenSize.width-765)/2, (screenSize.height-618)/2, 765, 618);
     }// </editor-fold>//GEN-END:initComponents
 
     private void botaoSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoSairActionPerformed
@@ -186,7 +184,6 @@ public class FrameDicionario extends javax.swing.JFrame {
          * Create and display the form
          */
         java.awt.EventQueue.invokeLater(new Runnable() {
-
             @Override
             public void run() {
                 new FrameDicionario().setVisible(true);

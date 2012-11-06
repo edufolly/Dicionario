@@ -2,6 +2,6 @@
 ## NetBeans
 #################
 
-build/
 dist/
+build/
 .DS_Store
