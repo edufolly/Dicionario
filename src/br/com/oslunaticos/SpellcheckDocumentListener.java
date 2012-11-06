@@ -1,6 +1,6 @@
-package br.com.oslunaticos.spellcheck;
+package br.com.oslunaticos;
 
-import br.com.oslunaticos.hunspell.Hunspell;
+import dk.dren.hunspell.Hunspell;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
@@ -16,41 +16,25 @@ public class SpellcheckDocumentListener implements DocumentListener {
     private Thread t;
     private Spellcheck spellcheck;
 
-    /*
-     *
-     */
     public SpellcheckDocumentListener(Spellcheck spellcheck) {
         this.spellcheck = spellcheck;
     }
 
-
-    /*
-     *
-     */
     @Override
     public void insertUpdate(DocumentEvent e) {
         ativa(e);
     }
 
-    /*
-     *
-     */
     @Override
     public void removeUpdate(DocumentEvent e) {
         ativa(e);
     }
 
-    /*
-     *
-     */
     @Override
     public void changedUpdate(DocumentEvent e) {
         ativa(e);
     }
 
-    /*
-     *
-     */
     private void ativa(DocumentEvent e) {
         cont = 0;
         if (t == null) {
@@ -64,14 +48,8 @@ public class SpellcheckDocumentListener implements DocumentListener {
         }
     }
 
-    /*
-     *
-     */
     private class Ativador implements Runnable {
 
-        /*
-         *
-         */
         @Override
         public void run() {
             while (cont < ativa) {

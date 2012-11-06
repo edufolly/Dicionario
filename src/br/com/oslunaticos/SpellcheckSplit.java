@@ -1,4 +1,4 @@
-package br.com.oslunaticos.spellcheck;
+package br.com.oslunaticos;
 
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
@@ -6,7 +6,7 @@ import java.util.NoSuchElementException;
 /**
  *
  * @author Eduardo Folly
- * 
+ *
  * Fork de StringTokenizer
  */
 public class SpellcheckSplit implements Enumeration {
@@ -22,9 +22,6 @@ public class SpellcheckSplit implements Enumeration {
     private boolean hasSurrogates = false;
     private int[] delimiterCodePoints;
 
-    /*
-     *
-     */
     public SpellcheckSplit(String str) {
         currentPosition = 0;
         newPosition = -1;
@@ -36,9 +33,6 @@ public class SpellcheckSplit implements Enumeration {
         setMaxDelimCodePoint();
     }
 
-    /*
-     *
-     */
     private void setMaxDelimCodePoint() {
         if (delimiters == null) {
             maxDelimCodePoint = 0;
@@ -70,9 +64,6 @@ public class SpellcheckSplit implements Enumeration {
         }
     }
 
-    /*
-     *
-     */
     private int skipDelimiters(int startPos) {
         if (delimiters == null) {
             throw new NullPointerException();
@@ -97,9 +88,6 @@ public class SpellcheckSplit implements Enumeration {
         return position;
     }
 
-    /*
-     *
-     */
     private int scanToken(int startPos) {
         int position = startPos;
         while (position < maxPosition) {
@@ -133,9 +121,6 @@ public class SpellcheckSplit implements Enumeration {
         return position;
     }
 
-    /*
-     *
-     */
     private boolean isDelimiter(int codePoint) {
         for (int i = 0; i < delimiterCodePoints.length; i++) {
             if (delimiterCodePoints[i] == codePoint) {
@@ -145,17 +130,11 @@ public class SpellcheckSplit implements Enumeration {
         return false;
     }
 
-    /*
-     *
-     */
     public boolean hasMoreTokens() {
         newPosition = skipDelimiters(currentPosition);
         return (newPosition < maxPosition);
     }
 
-    /*
-     *
-     */
     public Palavra nextToken() {
         currentPosition = (newPosition >= 0 && !delimsChanged)
                 ? newPosition : skipDelimiters(currentPosition);
@@ -168,32 +147,23 @@ public class SpellcheckSplit implements Enumeration {
         }
         int start = currentPosition;
         currentPosition = scanToken(currentPosition);
-        
+
         String texto = str.substring(start, currentPosition);
         Palavra palavra = new Palavra(start, currentPosition, texto);
-        
+
         return palavra;
     }
 
-    /*
-     *
-     */
     @Override
     public boolean hasMoreElements() {
         return hasMoreTokens();
     }
 
-    /*
-     *
-     */
     @Override
     public Object nextElement() {
         return nextToken();
     }
 
-    /*
-     *
-     */
     public int countTokens() {
         int count = 0;
         int currpos = currentPosition;

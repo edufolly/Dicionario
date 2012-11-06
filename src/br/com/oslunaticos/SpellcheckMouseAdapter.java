@@ -1,4 +1,4 @@
-package br.com.oslunaticos.spellcheck;
+package br.com.oslunaticos;
 
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -86,7 +86,6 @@ public class SpellcheckMouseAdapter extends MouseAdapter {
                         String sugest = itr.next();
                         menuItem = new JMenuItem(sugest);
                         menuItem.addActionListener(new ActionListener() {
-
                             @Override
                             public void actionPerformed(ActionEvent e) {
 
@@ -119,9 +118,6 @@ public class SpellcheckMouseAdapter extends MouseAdapter {
         }
     }
 
-    /*
-     * 
-     */
     private void substitui(JTextComponent text, int ini, String de, String para) {
         try {
             text.getDocument().remove(ini, de.length());

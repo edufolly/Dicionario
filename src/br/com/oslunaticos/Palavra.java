@@ -1,4 +1,4 @@
-package br.com.oslunaticos.spellcheck;
+package br.com.oslunaticos;
 
 /**
  *
@@ -45,9 +45,6 @@ public class Palavra {
         return "Palavra{" + "ini=" + ini + ", fim=" + fim + ", palavra=" + palavra + '}';
     }
 
-    /*
-     *
-     */
     public static String clearWord(String text) {
         String troca = "!@#$%&*()_+=,.;:/?[]{}<>\\–";
         for (int i = 0; i < troca.length(); i++) {

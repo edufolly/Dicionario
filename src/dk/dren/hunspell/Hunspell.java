@@ -1,10 +1,11 @@
-package br.com.oslunaticos.hunspell;
+package dk.dren.hunspell;
 
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.PointerByReference;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -13,8 +14,9 @@ import java.util.List;
  * singleton'ing the library instance (no need to load it more than once per
  * process) .
  *
- * The Hunspell java bindings are licensed under LGPL, see the file COPYING.txt
- * in the root of the distribution for the exact terms.
+ * The Hunspell java bindings are licensed under the same terms as Hunspell
+ * itself (GPL/LGPL/MPL tri-license), see the file COPYING.txt in the root of
+ * the distribution for the exact terms.
  *
  * @author Flemming Frandsen (flfr at stibo dot com)
  */
@@ -28,6 +30,10 @@ public class Hunspell {
      * The native library instance, created by JNA.
      */
     private HunspellLibrary hsl = null;
+    /**
+     * The library file that was loaded.
+     */
+    private String libFile;
 
     /**
      * The instance of the HunspellManager, looks for the native lib in the
@@ -72,7 +78,7 @@ public class Hunspell {
      */
     protected Hunspell(String libDir) throws UnsatisfiedLinkError, UnsupportedOperationException {
 
-        String libFile = libDir != null ? libDir + "/" + libName() : libNameBare();
+        libFile = libDir != null ? libDir + "/" + libName() : libNameBare();
         try {
             hsl = (HunspellLibrary) Native.loadLibrary(libFile, HunspellLibrary.class);
         } catch (UnsatisfiedLinkError urgh) {
@@ -114,9 +120,13 @@ public class Hunspell {
                     }
                 }
             }
-            System.out.println("Loading temp lib: " + lib.getAbsolutePath());
+            //System.out.println("Loading temp lib: "+lib.getAbsolutePath());
             hsl = (HunspellLibrary) Native.loadLibrary(lib.getAbsolutePath(), HunspellLibrary.class);
         }
+    }
+
+    public String getLibFile() {
+        return libFile;
     }
 
     /**
@@ -130,7 +140,8 @@ public class Hunspell {
             return libNameBare() + ".dll";
 
         } else if (os.startsWith("mac os x")) {
-            return "lib" + libNameBare() + ".dylib";
+            //	    return libNameBare()+".dylib";
+            return libNameBare() + ".jnilib";
 
         } else {
             return "lib" + libNameBare() + ".so";
@@ -149,14 +160,16 @@ public class Hunspell {
             if (x86) {
                 return "hunspell-win-x86-32";
             }
-            //if (amd64) { 
-            // Note: No bindings exist for this yet (no JNA support).
-            //	return "hunspell-win-x86-64";
-            //}
+            if (amd64) {
+                return "hunspell-win-x86-64";
+            }
 
         } else if (os.startsWith("mac os x")) {
-            if (x86 || arch.equals("x86_64")) {
+            if (x86) {
                 return "hunspell-darwin-x86-32";
+            }
+            if (amd64) {
+                return "hunspell-darwin-x86-64";
             }
             if (arch.equals("ppc")) {
                 return "hunspell-darwin-ppc-32";
@@ -171,9 +184,9 @@ public class Hunspell {
             }
 
         } else if (os.startsWith("sunos")) {
-            //if (arch.equals("sparc")) {
+            //if (arch.equals("sparc")) { 
             //	return "hunspell-sunos-sparc-64";
-            //}
+            //}			
         }
 
         throw new UnsupportedOperationException("Unknown OS/arch: " + os + "/" + arch);
@@ -291,67 +304,33 @@ public class Hunspell {
          * @param word The word to check and offer suggestions for
          */
         public List<String> suggest(String word) {
-            List<String> res = new ArrayList<String>();
             try {
                 int suggestionsCount = 0;
                 PointerByReference suggestions = new PointerByReference();
                 suggestionsCount = hsl.Hunspell_suggest(
                         hunspellDict, suggestions, stringToBytes(word));
 
-                // Get each of the suggestions out of the pointer array.
-                Pointer[] pointerArray = suggestions.getValue().
-                        getPointerArray(0, suggestionsCount);
-
-                for (int i = 0; i < suggestionsCount; i++) {
-
-                    /*
-                     * This only works for 8 bit chars, luckily hunspell uses
-                     * either 8 bit encodings or utf8, if someone implements
-                     * support in hunspell for utf16 we are in trouble.
-                     */
-                    long len = pointerArray[i].indexOf(0, (byte) 0);
-                    if (len != -1) {
-                        if (len > Integer.MAX_VALUE) {
-                            throw new RuntimeException(
-                                    "String improperly terminated: " + len);
-                        }
-                        byte[] data = pointerArray[i].getByteArray(0, (int) len);
-                        res.add(new String(data, encoding));
-                    }
-                }
-
+                return pointerToCStringsToList(suggestions, suggestionsCount);
             } catch (UnsupportedEncodingException ex) {
-            } // Shouldn't happen...
-
-            return res;
+                // Shouldn't happen...
+                return Collections.emptyList();
+            }
         }
 
-        /**
-         * Returns a list of stems
-         *
-         * @param word The word to get stems for
-         * @return List of stems or null if the word doesn't exist in dictionary
-         */
-        public List<String> stem(String word) {
-            List<String> res = new ArrayList<String>();
+        private List<String> pointerToCStringsToList(PointerByReference slst, int n) {
+            if (n == 0) {
+                return Collections.emptyList();
+            }
+
+            List<String> strings = new ArrayList<String>(n);
+
             try {
-                int stemsCount = 0;
+                // Get each of the suggestions out of the pointer array.
+                Pointer[] pointerArray = slst.getValue().
+                        getPointerArray(0, n);
 
-                PointerByReference stems = new PointerByReference();
-                stemsCount = hsl.Hunspell_stem(
-                        hunspellDict, stems, stringToBytes(word));
+                for (int i = 0; i < n; i++) {
 
-                if (stemsCount == 0) {
-                    return null;
-                }
-
-                Pointer[] pointerArray = stems.getValue().
-                        getPointerArray(0, stemsCount);
-
-                for (int i = 0; i < stemsCount; i++) {
-                    /*
-                     * Flemming's comment...
-                     */
                     /*
                      * This only works for 8 bit chars, luckily hunspell uses
                      * either 8 bit encodings or utf8, if someone implements
@@ -364,13 +343,17 @@ public class Hunspell {
                                     "String improperly terminated: " + len);
                         }
                         byte[] data = pointerArray[i].getByteArray(0, (int) len);
-                        res.add(new String(data, encoding));
+                        strings.add(new String(data, encoding));
                     }
                 }
-            } catch (UnsupportedEncodingException ex) {
+
+            } catch (UnsupportedEncodingException e) {
+                // Shouldn't happen...
+            } finally {
+                hsl.Hunspell_free_list(hunspellDict, slst, n);
             }
 
-            return res;
+            return strings;
         }
     }
 }

@@ -1,4 +1,4 @@
-package br.com.oslunaticos.spellcheck;
+package br.com.oslunaticos;
 
 import java.awt.*;
 import javax.swing.text.*;
@@ -11,30 +11,18 @@ public class UnderlineHighlighter extends DefaultHighlighter {
 
     private Highlighter.HighlightPainter painter;
 
-    /*
-     *
-     */
     public UnderlineHighlighter() {
         this(Color.red);
     }
 
-    /*
-     *
-     */
     public UnderlineHighlighter(Color color) {
         painter = new UnderlineHighlightPainter(color);
     }
 
-    /*
-     *
-     */
     public Object addHighlight(int p0, int p1) throws BadLocationException {
         return super.addHighlight(p0, p1, painter);
     }
 
-    /*
-     *
-     */
     @Override
     public void setDrawsLayeredHighlights(boolean newValue) {
         if (!newValue) {
@@ -44,23 +32,14 @@ public class UnderlineHighlighter extends DefaultHighlighter {
         super.setDrawsLayeredHighlights(newValue);
     }
 
-    /*
-     *
-     */
     public static class UnderlineHighlightPainter extends LayeredHighlighter.LayerPainter {
 
         protected Color color;
 
-        /*
-         *
-         */
         public UnderlineHighlightPainter(Color color) {
             this.color = color;
         }
 
-        /*
-         *
-         */
         @Override
         public Shape paintLayer(Graphics g, int p0, int p1, Shape viewBounds, JTextComponent editor, View view) {
             g.setColor(color);
@@ -99,12 +78,9 @@ public class UnderlineHighlighter extends DefaultHighlighter {
             return alloc;
         }
 
-        /*
-         *
-         */
         @Override
         public void paint(Graphics g, int p0, int p1, Shape bounds, JTextComponent c) {
-            //throw new UnsupportedOperationException("Not supported yet.");
+            // Nao utilizado.
         }
     }
 }
